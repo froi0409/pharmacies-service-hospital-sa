@@ -9,6 +9,7 @@ COPY src /app/src/
 COPY pom.xml /app/pom.xml
 
 RUN mvn -f /app/pom.xml clean package
+
 #
 # Package stage
 #
