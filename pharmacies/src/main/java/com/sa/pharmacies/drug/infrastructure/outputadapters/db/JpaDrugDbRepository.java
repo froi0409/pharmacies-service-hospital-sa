@@ -21,4 +21,9 @@ public interface JpaDrugDbRepository extends JpaRepository<DrugDbEntity, String>
     @Query(value = "SELECT * FROM pharmacies.drug d WHERE d.code IN :codes", nativeQuery = true)
     List<DrugDbEntity> findByCodes(@Param("codes") List<String> codes);
 
+    @Query(value = "SELECT * FROM pharmacies.drug d WHERE d.name IN :names", nativeQuery = true)
+    List<DrugDbEntity> findByNames(@Param("names") List<String> names);
+
+    @Query(value = "SELECT * FROM pharmacies.drug d WHERE d.name LIKE %:name%", nativeQuery = true)
+    List<DrugDbEntity> findByNamesLike(@Param("name") String name);
 }

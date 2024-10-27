@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @OutputAdapter
-public class SqlDrugOutputAdapter implements SaveDrugOutputPort, FindDrugByNameOutputPort, FindDrugByCodeOutputPort, FindAllDrugOutputPort, FindDrugByCodesOutputPort {
+public class SqlDrugOutputAdapter implements SaveDrugOutputPort, FindDrugByNameOutputPort, FindDrugByCodeOutputPort, FindAllDrugOutputPort, FindDrugByCodesOutputPort, FindDrugByNamesOutputPort, FindDrugByNamesLikeOutputPort {
     private final JpaDrugDbRepository jpaRepository;
 
     @Autowired
@@ -50,6 +50,22 @@ public class SqlDrugOutputAdapter implements SaveDrugOutputPort, FindDrugByNameO
     @Override
     public List<Drug> findByCodes(List<String> codes) {
         return jpaRepository.findByCodes(codes)
+                .stream()
+                .map(DrugDbEntity::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Drug> findByNames(List<String> names) {
+        return jpaRepository.findByNames(names)
+                .stream()
+                .map(DrugDbEntity::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Drug> findByNamesLike(String name) {
+        return jpaRepository.findByNamesLike(name)
                 .stream()
                 .map(DrugDbEntity::toDomain)
                 .collect(Collectors.toList());

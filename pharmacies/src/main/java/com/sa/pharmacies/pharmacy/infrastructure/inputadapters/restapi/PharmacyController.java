@@ -4,10 +4,13 @@ import com.sa.pharmacies.common.annotation.WebAdapter;
 import com.sa.pharmacies.common.exceptions.EntityAlreadyExistsException;
 import com.sa.pharmacies.drug.infrastructure.inputports.restapi.CreateDrugInputPort;
 import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByCodesInputPort;
+import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByNamesLikeInputPort;
 import com.sa.pharmacies.pharmacy.application.assignpharmacydrug.AssignPharmacyDrugRequest;
 import com.sa.pharmacies.pharmacy.application.createdrug.CreateDrugRequest;
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetItemDrugDataByCodesResponse;
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetListDrugDataByCodesRequest;
+import com.sa.pharmacies.pharmacy.application.getlistdrugdatabynameslike.GetItemDrugDataByNamesLikeResponse;
+import com.sa.pharmacies.pharmacy.application.getlistdrugdatabynameslike.GetListDrugDataByNamesLikeUseCase;
 import com.sa.pharmacies.pharmacy.domain.Pharmacy;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.CreatePharmacyByEventInputPort;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.ExistsPharmacyInputPort;
@@ -29,14 +32,18 @@ public class PharmacyController {
     private final GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort;
     private final AssignPharmacyDrugInputPort assignPharmacyDrugInputPort;
     private final ExistsPharmacyInputPort existsPharmacyInputPort;
+    private final GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort;
+    private final GetListDrugDataByNamesLikeUseCase getListDrugDataByNamesLikeUseCase;
 
     @Autowired
-    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort) {
+    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort, GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort, GetListDrugDataByNamesLikeUseCase getListDrugDataByNamesLikeUseCase) {
         this.createPharmacyByEventInputPort = createPharmacyByEventInputPort;
         this.createDrugInputPort = createDrugInputPort;
         this.getListDrugDataByCodesInputPort = getListDrugDataByCodesInputPort;
         this.assignPharmacyDrugInputPort = assignPharmacyDrugInputPort;
         this.existsPharmacyInputPort = existsPharmacyInputPort;
+        this.getListDrugDataByNamesLikeInputPort = getListDrugDataByNamesLikeInputPort;
+        this.getListDrugDataByNamesLikeUseCase = getListDrugDataByNamesLikeUseCase;
     }
 
     @PostMapping("{idArea}")
@@ -49,6 +56,14 @@ public class PharmacyController {
     public ResponseEntity<String> createDrug(@RequestBody CreateDrugRequest createDrugRequest) throws EntityAlreadyExistsException {
         String id = createDrugInputPort.createDrug(createDrugRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
+    }
+
+    @PostMapping("drug/get-list-drug-data-by-names-like/{name}")
+    public ResponseEntity<List<GetItemDrugDataByNamesLikeResponse>> getListDrugDataByNamesLike(
+            @PathVariable String name
+    ){
+        List<GetItemDrugDataByNamesLikeResponse> response = getListDrugDataByNamesLikeUseCase.getDrugNamesLike(name);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("get-list-drug-data-by-codes")
