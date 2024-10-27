@@ -3,6 +3,7 @@ package com.sa.pharmacies.pharmacy.infrastructure.inputadapters.restapi;
 import com.sa.pharmacies.common.annotation.WebAdapter;
 import com.sa.pharmacies.common.exceptions.EntityAlreadyExistsException;
 import com.sa.pharmacies.drug.infrastructure.inputports.restapi.CreateDrugInputPort;
+import com.sa.pharmacies.drug.infrastructure.inputports.restapi.ExistsDrugInputPort;
 import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByCodesInputPort;
 import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByNamesLikeInputPort;
 import com.sa.pharmacies.pharmacy.application.assignpharmacydrug.AssignPharmacyDrugRequest;
@@ -33,17 +34,17 @@ public class PharmacyController {
     private final AssignPharmacyDrugInputPort assignPharmacyDrugInputPort;
     private final ExistsPharmacyInputPort existsPharmacyInputPort;
     private final GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort;
-    private final GetListDrugDataByNamesLikeUseCase getListDrugDataByNamesLikeUseCase;
+    private final ExistsDrugInputPort existsDrugInputPort;
 
     @Autowired
-    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort, GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort, GetListDrugDataByNamesLikeUseCase getListDrugDataByNamesLikeUseCase) {
+    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort, GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort, ExistsDrugInputPort existsDrugInputPort) {
         this.createPharmacyByEventInputPort = createPharmacyByEventInputPort;
         this.createDrugInputPort = createDrugInputPort;
         this.getListDrugDataByCodesInputPort = getListDrugDataByCodesInputPort;
         this.assignPharmacyDrugInputPort = assignPharmacyDrugInputPort;
         this.existsPharmacyInputPort = existsPharmacyInputPort;
         this.getListDrugDataByNamesLikeInputPort = getListDrugDataByNamesLikeInputPort;
-        this.getListDrugDataByNamesLikeUseCase = getListDrugDataByNamesLikeUseCase;
+        this.existsDrugInputPort = existsDrugInputPort;
     }
 
     @PostMapping("{idArea}")
@@ -62,7 +63,7 @@ public class PharmacyController {
     public ResponseEntity<List<GetItemDrugDataByNamesLikeResponse>> getListDrugDataByNamesLike(
             @PathVariable String name
     ){
-        List<GetItemDrugDataByNamesLikeResponse> response = getListDrugDataByNamesLikeUseCase.getDrugNamesLike(name);
+        List<GetItemDrugDataByNamesLikeResponse> response = getListDrugDataByNamesLikeInputPort.getDrugNamesLike(name);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -87,4 +88,13 @@ public class PharmacyController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    @RequestMapping(method = RequestMethod.HEAD, path = "/drug/{code}")
+    public ResponseEntity<Void> checkDrugExists(@RequestParam("code") String code) {
+        if (existsDrugInputPort.findByCode(code).isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 }
