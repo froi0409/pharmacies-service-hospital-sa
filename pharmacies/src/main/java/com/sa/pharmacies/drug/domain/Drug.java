@@ -29,6 +29,10 @@ public class Drug {
     public boolean validateUnitPrice(){
         return unitPrice > 0;
     }
+
+    public String getCodeString(){
+        return code.toString();
+    }
 }
 
 
