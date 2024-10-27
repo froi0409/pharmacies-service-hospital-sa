@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@Deprecated
+
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
