@@ -10,6 +10,7 @@ import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetItemDrug
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetListDrugDataByCodesRequest;
 import com.sa.pharmacies.pharmacy.domain.Pharmacy;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.CreatePharmacyByEventInputPort;
+import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.ExistsPharmacyInputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.inputports.restapi.AssignPharmacyDrugInputPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +28,15 @@ public class PharmacyController {
     private final CreateDrugInputPort createDrugInputPort;
     private final GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort;
     private final AssignPharmacyDrugInputPort assignPharmacyDrugInputPort;
+    private final ExistsPharmacyInputPort existsPharmacyInputPort;
+
     @Autowired
-    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort) {
+    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort) {
         this.createPharmacyByEventInputPort = createPharmacyByEventInputPort;
         this.createDrugInputPort = createDrugInputPort;
         this.getListDrugDataByCodesInputPort = getListDrugDataByCodesInputPort;
         this.assignPharmacyDrugInputPort = assignPharmacyDrugInputPort;
+        this.existsPharmacyInputPort = existsPharmacyInputPort;
     }
 
     @PostMapping("{idArea}")
@@ -59,5 +63,13 @@ public class PharmacyController {
     public ResponseEntity<String> assignPharmacyDrugInputPort(@RequestBody AssignPharmacyDrugRequest request) throws EntityAlreadyExistsException {
         assignPharmacyDrugInputPort.assign(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Pharmacy created");
+    }
+
+    @RequestMapping(method = RequestMethod.HEAD, path = "/pharmacy/{id}")
+    public ResponseEntity<Void> checkClientExists(@RequestParam("id") String id) {
+        if(existsPharmacyInputPort.getPharmacyById(id).isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
