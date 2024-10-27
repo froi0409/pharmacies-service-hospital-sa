@@ -26,7 +26,7 @@ public class DrugDbEntity {
     private String name;
     @Column(name = "cost")
     private double cost;
-    @Column(name = "minimun")
+    @Column(name = "minimum")
     private Integer minimumQuantity;
     @Column(name = "unit_price")
     private double unitPrice;

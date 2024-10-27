@@ -5,9 +5,10 @@ import lombok.Value;
 
 @Value
 public class GetItemDrugDataByCodesResponse {
+    String code;
     String name;
 
     public static GetItemDrugDataByCodesResponse from(Drug drug){
-        return new GetItemDrugDataByCodesResponse(drug.getName());
+        return new GetItemDrugDataByCodesResponse(drug.getCode().toString(),drug.getName());
     }
 }
