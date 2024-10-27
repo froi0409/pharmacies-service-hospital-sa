@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class JwtOutputAdapter implements JwtOutputPort {
     private final long EXPIRATION_TIME = 86400000; // 10 days
-    private final int MINUTES_ACTIVE = 5;
+    private final int MINUTES_ACTIVE = 15;
     private final String SECRET;
     private final RedisTemplate<String, String> redisTemplate;
 
