@@ -16,6 +16,7 @@ import com.sa.pharmacies.pharmacy.domain.Pharmacy;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.CreatePharmacyByEventInputPort;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.ExistsPharmacyInputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.inputports.restapi.AssignPharmacyDrugInputPort;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @WebAdapter
 @RestController
 @RequestMapping("api/v1/pharmacies")
+@SecurityRequirement(name = "bearerAuth")
 public class PharmacyController {
     private final CreatePharmacyByEventInputPort createPharmacyByEventInputPort;
     private final CreateDrugInputPort createDrugInputPort;
