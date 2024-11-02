@@ -28,7 +28,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/v1/pharmacies")
 @SecurityRequirement(name = "bearerAuth")
-@PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
 public class PharmacyController {
     private final CreatePharmacyByEventInputPort createPharmacyByEventInputPort;
     private final CreateDrugInputPort createDrugInputPort;
@@ -53,18 +52,21 @@ public class PharmacyController {
         this.getAllListDrugDataByPharmacyInputPort = getAllListDrugDataByPharmacyInputPort;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @PostMapping("{idArea}")
     public ResponseEntity<String> createPharmacy(@PathVariable String idArea) throws EntityAlreadyExistsException {
         createPharmacyByEventInputPort.createPharmacyByEvent(idArea);
         return ResponseEntity.status(HttpStatus.CREATED).body("Pharmacy created");
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @PostMapping("drug")
     public ResponseEntity<String> createDrug(@RequestBody CreateDrugRequest createDrugRequest) throws EntityAlreadyExistsException {
         String id = createDrugInputPort.createDrug(createDrugRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @PostMapping("drug/get-list-drug-data-by-names-like/{name}")
     public ResponseEntity<List<GetItemDrugDataByNamesLikeResponse>> getListDrugDataByNamesLike(
             @PathVariable String name
@@ -73,6 +75,7 @@ public class PharmacyController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @PostMapping("get-list-drug-data-by-codes")
     public ResponseEntity<List<GetItemDrugDataByCodesResponse>> getListDrugDataByCodes(
             @RequestBody GetListDrugDataByCodesRequest request
@@ -81,20 +84,23 @@ public class PharmacyController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @PostMapping("assign/pharmacy-drug")
     public ResponseEntity<String> assignPharmacyDrugInputPort(@RequestBody AssignPharmacyDrugRequest request) throws EntityAlreadyExistsException, JsonProcessingException {
         assignPharmacyDrugInputPort.assign(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Drug assign to this pharmacy");
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @RequestMapping(method = RequestMethod.HEAD, path = "/pharmacy/{id}")
-    public ResponseEntity<Void> checkClientExists(@RequestParam("id") String id) {
+    public ResponseEntity<Void> checkPharmacyExists(@RequestParam("id") String id) {
         if(existsPharmacyInputPort.getPharmacyById(id).isPresent()){
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @RequestMapping(method = RequestMethod.HEAD, path = "/drug/{code}")
     public ResponseEntity<Void> checkDrugExists(@RequestParam("code") String code) {
         if (existsDrugInputPort.findByCode(code).isPresent()){
@@ -103,12 +109,14 @@ public class PharmacyController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @GetMapping("drug/{code}")
     public ResponseEntity<GetDrugByCodeResponse> getDrugData(@PathVariable String code) {
         GetDrugByCodeResponse response = getDrugByCodeInputPort.getDrugByCode(code);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @GetMapping("drug/get-all")
     public ResponseEntity<List<GetAllListDrugDataByPharmacyResponse>> getAllDrugs(){
         List<GetAllListDrugDataByPharmacyResponse> responses = getAllListDrugDataByPharmacyInputPort.getAll();
