@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/pharmacies-drugs")
 @SecurityRequirement(name = "bearerAuth")
+@PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
 public class PharmacyDrugController {
     private final BuyMoreDrugsPharmacyInputPort buyMoreDrugsPharmacyInputPort;
     private final GetListDrugDataByPharmacyInputPort getListDrugDataByPharmacyInputPort;
@@ -51,7 +53,7 @@ public class PharmacyDrugController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("sell-drugs=by-pharmacy/{idPharmacy}/{idUser}/{idEmployee}")
+    @PostMapping("sell-drugs-by-pharmacy/{idPharmacy}/{idUser}/{idEmployee}")
     public HttpEntity<byte[]> payBillPharmacy (
             @PathVariable String idPharmacy,
             @PathVariable String idUser,
