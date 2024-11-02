@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,25 +29,29 @@ public class GetListDrugDataByPharmacyUseCase implements GetListDrugDataByPharma
     }
 
     @Override
-    public List<GetItemDrugDataByNamesLikeResponse> getDrugsName(String idPharmacy) {
+    public List<GetListDrugDataByPharmacyResponse> getDrugsName(String idPharmacy) {
         // Obtener todos los PharmacyDrug de la farmacia específica
         List<PharmacyDrug> pharmacyDrugs = findPharmacyDrugByIdPharmacyOutputPort.findByPharmacyId(idPharmacy);
-        System.out.println(pharmacyDrugs.toString());
-        // Obtener la lista de IDs de medicamentos (idDrug) de los PharmacyDrug
-        Set<String> drugIds = pharmacyDrugs.stream()
-                .map((pharmacyDrug -> pharmacyDrug.getDrug().getCode().toString()))
-                .collect(Collectors.toSet());
+
+        // Crear un Map entre el código de Drug y la cantidad (quantity) de PharmacyDrug
+        Map<String, Integer> drugStockMap = pharmacyDrugs.stream()
+                .collect(Collectors.toMap(
+                        pharmacyDrug -> pharmacyDrug.getDrug().getCode().toString(),
+                        PharmacyDrug::getQuantity
+                ));
 
         // Obtener todos los Drug y filtrar solo los que coincidan con los drugIds
         List<Drug> drugs = findAllDrugOutputPort.findAllDrugs().stream()
-                .filter(drug -> drugIds.contains(drug.getCode().toString()))
+                .filter(drug -> drugStockMap.containsKey(drug.getCode().toString()))
                 .toList();
 
-        // Mapear cada Drug a GetItemDrugDataByNamesLikeResponse
+        // Mapear cada Drug a GetListDrugDataByPharmacyResponse, usando el stock del Map
         return drugs.stream()
-                .map(GetItemDrugDataByNamesLikeResponse::from)
+                .map(drug -> GetListDrugDataByPharmacyResponse.from(
+                        drug,
+                        drugStockMap.getOrDefault(drug.getCode().toString(), 0)  // Obtener el stock desde el Map
+                ))
                 .collect(Collectors.toList());
-
     }
 
 }

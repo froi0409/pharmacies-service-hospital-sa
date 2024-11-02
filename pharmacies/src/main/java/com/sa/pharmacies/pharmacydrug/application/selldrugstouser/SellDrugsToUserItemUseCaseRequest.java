@@ -5,6 +5,7 @@ import lombok.Value;
 
 @Value
 @NoArgsConstructor(force = true)
-public class SellDrugsToUserRequest {
-
+public class SellDrugsToUserItemUseCaseRequest {
+    String code;
+    int quantity;
 }
