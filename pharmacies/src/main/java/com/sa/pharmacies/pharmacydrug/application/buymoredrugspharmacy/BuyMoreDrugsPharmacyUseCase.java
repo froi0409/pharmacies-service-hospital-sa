@@ -15,6 +15,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @Transactional
 @UseCase
 public class BuyMoreDrugsPharmacyUseCase implements BuyMoreDrugsPharmacyInputPort {
@@ -66,7 +69,9 @@ public class BuyMoreDrugsPharmacyUseCase implements BuyMoreDrugsPharmacyInputPor
         // Crear PaymentDrugRequest con la información necesaria
         PaymentDrugRequest paymentDrugRequest = new PaymentDrugRequest();
         paymentDrugRequest.setAmount(calculatedAmount); // Debes calcular el monto según el precio y la cantidad
-        paymentDrugRequest.setDate(request.getDate().toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = request.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
+        paymentDrugRequest.setDate(formattedDate);
         paymentDrugRequest.setIdDrug(code);
 
         //send to kafka
