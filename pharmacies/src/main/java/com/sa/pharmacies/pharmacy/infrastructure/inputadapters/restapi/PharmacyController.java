@@ -80,7 +80,7 @@ public class PharmacyController {
     @PostMapping("assign/pharmacy-drug")
     public ResponseEntity<String> assignPharmacyDrugInputPort(@RequestBody AssignPharmacyDrugRequest request) throws EntityAlreadyExistsException {
         assignPharmacyDrugInputPort.assign(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Pharmacy created");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Drug assign to this pharmacy");
     }
 
     @RequestMapping(method = RequestMethod.HEAD, path = "/pharmacy/{id}")

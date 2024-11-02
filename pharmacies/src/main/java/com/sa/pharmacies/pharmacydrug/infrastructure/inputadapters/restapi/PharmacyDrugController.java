@@ -1,5 +1,6 @@
 package com.sa.pharmacies.pharmacydrug.infrastructure.inputadapters.restapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sa.pharmacies.common.annotation.WebAdapter;
 import com.sa.pharmacies.pharmacydrug.application.buymoredrugspharmacy.BuyMoreDrugsPharmacyUseCaseRequest;
 import com.sa.pharmacies.pharmacydrug.infrastructure.inputports.restapi.BuyMoreDrugsPharmacyInputPort;
@@ -23,7 +24,7 @@ public class PharmacyDrugController {
     @PostMapping("buy-more/{idPharmacy}/{codeDrug}")
     public ResponseEntity<String> buyMoreDrugs(@PathVariable("idPharmacy") String idPharmacy,
                                                @PathVariable("codeDrug") String code,
-                                               @RequestBody BuyMoreDrugsPharmacyUseCaseRequest request){
+                                               @RequestBody BuyMoreDrugsPharmacyUseCaseRequest request) throws JsonProcessingException {
         buyMoreDrugsPharmacyInputPort.buyMoreDrugsPharmacy(idPharmacy, code, request);
         return ResponseEntity.ok().build();
     }

@@ -1,5 +1,6 @@
 package com.sa.pharmacies.pharmacydrug.application.buymoredrugspharmacy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sa.pharmacies.common.annotation.UseCase;
 import com.sa.pharmacies.drug.domain.Drug;
 import com.sa.pharmacies.drug.infrastructure.outputports.db.FindDrugByCodeOutputPort;
@@ -33,7 +34,7 @@ public class BuyMoreDrugsPharmacyUseCase implements BuyMoreDrugsPharmacyInputPor
     }
 
     @Override
-    public void buyMoreDrugsPharmacy(String idPharmacy, String code, BuyMoreDrugsPharmacyUseCaseRequest request) throws EntityNotFoundException, IllegalArgumentException {
+    public void buyMoreDrugsPharmacy(String idPharmacy, String code, BuyMoreDrugsPharmacyUseCaseRequest request) throws EntityNotFoundException, IllegalArgumentException, JsonProcessingException {
         //find the pharmacy
         Pharmacy pharmacy = findPharmacyByIdOutputPort.findById(idPharmacy)
                 .orElseThrow(() -> new EntityNotFoundException("Pharmacy not found"));
