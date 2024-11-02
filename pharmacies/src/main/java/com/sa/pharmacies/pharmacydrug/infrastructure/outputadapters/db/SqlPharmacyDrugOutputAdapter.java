@@ -4,15 +4,18 @@ import com.sa.pharmacies.common.annotation.OutputAdapter;
 import com.sa.pharmacies.drug.domain.Drug;
 import com.sa.pharmacies.pharmacy.domain.Pharmacy;
 import com.sa.pharmacies.pharmacydrug.domain.PharmacyDrug;
+import com.sa.pharmacies.pharmacydrug.infrastructure.outputports.db.FindPharmacyDrugByIdPharmacyOutputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.outputports.db.FindPharmacyDrugOutputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.outputports.db.SavePharmacyDrugOutputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.outputports.db.UpdatePharmacyDrugOutputPort;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @OutputAdapter
-public class SqlPharmacyDrugOutputAdapter implements SavePharmacyDrugOutputPort, FindPharmacyDrugOutputPort, UpdatePharmacyDrugOutputPort {
+public class SqlPharmacyDrugOutputAdapter implements SavePharmacyDrugOutputPort, FindPharmacyDrugOutputPort, UpdatePharmacyDrugOutputPort, FindPharmacyDrugByIdPharmacyOutputPort {
 
     private final JpaPharmacyDrugRepository jpaPharmacyDrugRepository;
 
@@ -49,5 +52,13 @@ public class SqlPharmacyDrugOutputAdapter implements SavePharmacyDrugOutputPort,
         pharmacyDrugDbEntity.setIdPharmacy(pharmacyDrug.getPharmacy().getIdArea());
         pharmacyDrugDbEntity.setIdDrug(pharmacyDrug.getDrug().getCode().toString());
         jpaPharmacyDrugRepository.save(pharmacyDrugDbEntity);
+    }
+
+    @Override
+    public List<PharmacyDrug> findByPharmacyId(String idPharmacy) {
+        return jpaPharmacyDrugRepository.findByPharmacyId(idPharmacy)
+                .stream()
+                .map((PharmacyDrugDbEntity::toDomainId))
+                .collect(Collectors.toList());
     }
 }

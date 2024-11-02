@@ -45,6 +45,15 @@ public class PharmacyDrugDbEntity {
                 .build();
     }
 
+    public PharmacyDrug toDomainId(){
+        return PharmacyDrug.builder()
+                .id(UUID.fromString(id))
+                .quantity(quantity)
+                .pharmacy(Pharmacy.builder().idArea(idPharmacy).build())
+                .drug(Drug.builder().code(UUID.fromString(idDrug)).build())
+                .build();
+    }
+
     public static PharmacyDrugDbEntity from(PharmacyDrug pharmacyDrug){
         return PharmacyDrugDbEntity.builder()
                 .id(pharmacyDrug.getId() != null ? pharmacyDrug.getId().toString() : UUID.randomUUID().toString())

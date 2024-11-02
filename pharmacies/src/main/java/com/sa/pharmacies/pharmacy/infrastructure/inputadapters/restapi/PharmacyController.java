@@ -1,18 +1,15 @@
 package com.sa.pharmacies.pharmacy.infrastructure.inputadapters.restapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sa.pharmacies.common.annotation.WebAdapter;
 import com.sa.pharmacies.common.exceptions.EntityAlreadyExistsException;
-import com.sa.pharmacies.drug.infrastructure.inputports.restapi.CreateDrugInputPort;
-import com.sa.pharmacies.drug.infrastructure.inputports.restapi.ExistsDrugInputPort;
-import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByCodesInputPort;
-import com.sa.pharmacies.drug.infrastructure.inputports.restapi.GetListDrugDataByNamesLikeInputPort;
+import com.sa.pharmacies.drug.infrastructure.inputports.restapi.*;
 import com.sa.pharmacies.pharmacy.application.assignpharmacydrug.AssignPharmacyDrugRequest;
 import com.sa.pharmacies.pharmacy.application.createdrug.CreateDrugRequest;
+import com.sa.pharmacies.pharmacy.application.getdrugbycode.GetDrugByCodeResponse;
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetItemDrugDataByCodesResponse;
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabycodes.GetListDrugDataByCodesRequest;
 import com.sa.pharmacies.pharmacy.application.getlistdrugdatabynameslike.GetItemDrugDataByNamesLikeResponse;
-import com.sa.pharmacies.pharmacy.application.getlistdrugdatabynameslike.GetListDrugDataByNamesLikeUseCase;
-import com.sa.pharmacies.pharmacy.domain.Pharmacy;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.CreatePharmacyByEventInputPort;
 import com.sa.pharmacies.pharmacy.infrastructure.inputports.restapi.ExistsPharmacyInputPort;
 import com.sa.pharmacies.pharmacydrug.infrastructure.inputports.restapi.AssignPharmacyDrugInputPort;
@@ -37,9 +34,10 @@ public class PharmacyController {
     private final ExistsPharmacyInputPort existsPharmacyInputPort;
     private final GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort;
     private final ExistsDrugInputPort existsDrugInputPort;
+    private final GetDrugByCodeInputPort getDrugByCodeInputPort;
 
     @Autowired
-    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort, GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort, ExistsDrugInputPort existsDrugInputPort) {
+    public PharmacyController(CreatePharmacyByEventInputPort createPharmacyByEventInputPort, CreateDrugInputPort createDrugInputPort, GetListDrugDataByCodesInputPort getListDrugDataByCodesInputPort, AssignPharmacyDrugInputPort assignPharmacyDrugInputPort, ExistsPharmacyInputPort existsPharmacyInputPort, GetListDrugDataByNamesLikeInputPort getListDrugDataByNamesLikeInputPort, ExistsDrugInputPort existsDrugInputPort, GetDrugByCodeInputPort getDrugByCodeInputPort) {
         this.createPharmacyByEventInputPort = createPharmacyByEventInputPort;
         this.createDrugInputPort = createDrugInputPort;
         this.getListDrugDataByCodesInputPort = getListDrugDataByCodesInputPort;
@@ -47,6 +45,7 @@ public class PharmacyController {
         this.existsPharmacyInputPort = existsPharmacyInputPort;
         this.getListDrugDataByNamesLikeInputPort = getListDrugDataByNamesLikeInputPort;
         this.existsDrugInputPort = existsDrugInputPort;
+        this.getDrugByCodeInputPort = getDrugByCodeInputPort;
     }
 
     @PostMapping("{idArea}")
@@ -78,7 +77,7 @@ public class PharmacyController {
     }
 
     @PostMapping("assign/pharmacy-drug")
-    public ResponseEntity<String> assignPharmacyDrugInputPort(@RequestBody AssignPharmacyDrugRequest request) throws EntityAlreadyExistsException {
+    public ResponseEntity<String> assignPharmacyDrugInputPort(@RequestBody AssignPharmacyDrugRequest request) throws EntityAlreadyExistsException, JsonProcessingException {
         assignPharmacyDrugInputPort.assign(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Drug assign to this pharmacy");
     }
@@ -97,6 +96,12 @@ public class PharmacyController {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("drug/{code})")
+    public ResponseEntity<GetDrugByCodeResponse> getDrugData(@PathVariable String code) {
+        GetDrugByCodeResponse response = getDrugByCodeInputPort.getDrugByCode(code);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
