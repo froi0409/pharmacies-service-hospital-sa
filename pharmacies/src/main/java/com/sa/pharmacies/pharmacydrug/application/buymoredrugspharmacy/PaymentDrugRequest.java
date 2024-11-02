@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class PaymentDrugRequest {
     private Double amount;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
     private String idDrug;
 }
