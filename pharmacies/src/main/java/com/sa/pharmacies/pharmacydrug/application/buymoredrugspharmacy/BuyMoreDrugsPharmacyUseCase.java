@@ -66,7 +66,7 @@ public class BuyMoreDrugsPharmacyUseCase implements BuyMoreDrugsPharmacyInputPor
         // Crear PaymentDrugRequest con la información necesaria
         PaymentDrugRequest paymentDrugRequest = new PaymentDrugRequest();
         paymentDrugRequest.setAmount(calculatedAmount); // Debes calcular el monto según el precio y la cantidad
-        paymentDrugRequest.setDate(request.getDate());
+        paymentDrugRequest.setDate(request.getDate().toString());
         paymentDrugRequest.setIdDrug(code);
 
         //send to kafka
