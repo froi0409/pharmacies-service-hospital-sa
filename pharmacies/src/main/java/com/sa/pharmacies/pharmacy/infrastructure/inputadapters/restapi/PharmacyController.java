@@ -93,7 +93,7 @@ public class PharmacyController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @RequestMapping(method = RequestMethod.HEAD, path = "/pharmacy/{id}")
-    public ResponseEntity<Void> checkPharmacyExists(@RequestParam("id") String id) {
+    public ResponseEntity<Void> checkPharmacyExists(@PathVariable("id") String id) {
         if(existsPharmacyInputPort.getPharmacyById(id).isPresent()){
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -102,7 +102,7 @@ public class PharmacyController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'RECEPTIONIST', 'DOCTOR')")
     @RequestMapping(method = RequestMethod.HEAD, path = "/drug/{code}")
-    public ResponseEntity<Void> checkDrugExists(@RequestParam("code") String code) {
+    public ResponseEntity<Void> checkDrugExists(@PathVariable("code") String code) {
         if (existsDrugInputPort.findByCode(code).isPresent()){
             return ResponseEntity.status(HttpStatus.OK).build();
         }
