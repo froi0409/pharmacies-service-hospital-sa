@@ -2,11 +2,13 @@ package com.sa.pharmacies.pharmacy.application.assignpharmacydrug;
 
 
 import com.sa.pharmacies.pharmacydrug.domain.PharmacyDrug;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 @Value
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class AssignPharmacyDrugRequest {
     Integer quantity;
     String idPharmacy;
